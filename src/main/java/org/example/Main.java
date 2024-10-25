@@ -12,6 +12,7 @@ interface TransactionManager {
 }
 
 class Transaction implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private final int amount;
     private final LocalDate date;
@@ -115,14 +116,10 @@ class InputHandler {
 
 abstract class BankAccount {
     private int balance;
-    private final String customerName;
-    private final String customerId;
     protected List<Transaction> transactions = new ArrayList<>();
     private final TransactionManager transactionManager;
 
-    public BankAccount(String customerName, String customerId, TransactionManager transactionManager) {
-        this.customerName = customerName;
-        this.customerId = customerId;
+    public BankAccount(String customerId, TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
@@ -191,8 +188,8 @@ abstract class BankAccount {
 class SimpleBankAccount extends BankAccount {
     private final InputHandler inputHandler;
 
-    public SimpleBankAccount(String customerName, String customerId, InputHandler inputHandler, TransactionManager transactionManager) {
-        super(customerName, customerId, transactionManager);
+    public SimpleBankAccount(String customerId, InputHandler inputHandler, TransactionManager transactionManager) {
+        super(customerId, transactionManager);
         this.inputHandler = inputHandler;
     }
 
@@ -221,7 +218,7 @@ class SimpleBankAccount extends BankAccount {
     public static void main(String[] args) {
         InputHandler inputHandler = new InputHandler();
         TransactionManager fileTransactionManager = new FileTransactionManager();
-        SimpleBankAccount account = new SimpleBankAccount("John Doe", "JD123", inputHandler, fileTransactionManager);
+        SimpleBankAccount account = new SimpleBankAccount("JD123", inputHandler, fileTransactionManager);
         account.showMenu();
     }
 }
