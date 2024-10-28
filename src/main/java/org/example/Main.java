@@ -12,7 +12,6 @@ interface TransactionManager {
 }
 
 class Transaction implements Serializable {
-    @Serial
     private static final long serialVersionUID = 1L;
     private final int amount;
     private final LocalDate date;
@@ -183,6 +182,16 @@ abstract class BankAccount {
     }
 
     public abstract void showMenu();
+
+    public void deleteTransactionsByDate(LocalDate date) {
+        transactions.removeIf(t -> t.getDate().equals(date));
+        System.out.println("Transactions on " + date + " have been deleted.");
+    }
+
+    public void deleteAllTransactions() {
+        transactions.clear();
+        System.out.println("All transactions have been deleted.");
+    }
 }
 
 class SimpleBankAccount extends BankAccount {
@@ -197,7 +206,7 @@ class SimpleBankAccount extends BankAccount {
     public void showMenu() {
         char choice;
         do {
-            System.out.println("\n1: Check balance\n2: Deposit\n3: Withdraw\n4: Show transaction history\n5: Show transaction history by day\n6: Show transaction history by month\n7: Show transaction history by year\n8: Save transactions\n9: Load transactions\n0: Exit");
+            System.out.println("\n1: Check balance\n2: Deposit\n3: Withdraw\n4: Show transaction history\n5: Show transaction history by day\n6: Show transaction history by month\n7: Show transaction history by year\n8: Save transactions\n9: Load transactions\nA: Delete transactions by day\nB: Delete all transactions\n0: Exit");
             choice = inputHandler.getChoice();
             switch (choice) {
                 case '1': System.out.println("Balance: " + getBalance()); break;
@@ -209,12 +218,16 @@ class SimpleBankAccount extends BankAccount {
                 case '7': showTransactionHistoryByYear(inputHandler.getYear()); break;
                 case '8': saveTransactions(inputHandler.getFilename()); break;
                 case '9': loadTransactions(inputHandler.getFilename()); break;
+                case 'A': deleteTransactionsByDate(inputHandler.getDate("yyyy-MM-dd")); break;
+                case 'B': deleteAllTransactions(); break;
                 case '0': System.out.println("Exiting..."); break;
                 default: System.out.println("Invalid choice. Please try again.");
             }
         } while (choice != '0');
     }
+}
 
+public class Main {
     public static void main(String[] args) {
         InputHandler inputHandler = new InputHandler();
         TransactionManager fileTransactionManager = new FileTransactionManager();
