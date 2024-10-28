@@ -12,6 +12,7 @@ interface TransactionManager {
 }
 
 class Transaction implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private final int amount;
     private final LocalDate date;
@@ -118,7 +119,7 @@ abstract class BankAccount {
     protected List<Transaction> transactions = new ArrayList<>();
     private final TransactionManager transactionManager;
 
-    public BankAccount(String customerId, TransactionManager transactionManager) {
+    public BankAccount(String ignoredCustomerId, TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
